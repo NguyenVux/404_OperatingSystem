@@ -1,0 +1,42 @@
+{
+    "configurations": [
+        {
+            "name": "llvm/Clang",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "D:/404_OperatingSystem/gnu-efi/inc",
+                "D:/404_OperatingSystem/gnu-efi/inc/x86_64"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.19041.0",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30037/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        },
+        {
+            "name": "UEFI_OS",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/gnu-efi/inc",
+                "D:/404_OperatingSystem/gnu-efi/inc/x86_64"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
