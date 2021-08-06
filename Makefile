@@ -12,4 +12,7 @@ buildimg:
 	pwsh -c "wsl ./buildimg.sh"
 run:
 	pwsh -f run2.ps1
+clean:
+	$(MAKE) -C kernel clean
+	$(MAKE) -C bootloader clean
 all: bootloader kernel buildimg run

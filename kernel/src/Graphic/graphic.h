@@ -5,17 +5,17 @@
 
 #define PSF_MAGIC 0x436
 
-typedef struct{
+struct PSF1_HEADER{
 	unsigned short magic;
 	unsigned char mode;
 	unsigned char charsize;
-} PSF1_HEADER;
+} ;
 
 
-typedef struct{
+struct PSF1_FONT{
 	PSF1_HEADER* PSF1_HEADERl;
 	void* glyph_BUFFER;
-} PSF1_FONT;
+} ;
 
 struct FrameBuffer{
 	void* Base_Adrress;

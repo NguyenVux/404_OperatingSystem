@@ -1,4 +1,4 @@
-#include "Graphic\graphic.h"
+#include "stdout.h"
 #include "stddef.h"
 #include "stdint.h"
 struct EFI_MEMORY_DESCRIPTOR{
@@ -12,26 +12,34 @@ struct EFI_MEMORY_DESCRIPTOR{
 struct BootInfo
 {
 	FrameBuffer* buffer;
+	PSF1_FONT* font;
 	EFI_MEMORY_DESCRIPTOR *map;
 	uint64_t mMap_size;
 	uint64_t Descriptor_size;
 };
 
+BootInfo Boot_info;
 
-
-extern "C" int _start(BootInfo bootInfo)
+extern "C" void _start(BootInfo bootInfo)
 {
-	uint32_t* pixel = (uint32_t*)bootInfo.buffer->Base_Adrress;
-	uint64_t maxpx = bootInfo.buffer->height*bootInfo.buffer->Pixel_per_ScaneLine;
-	uint32_t color = 0x00ffff;
-	//for(color = 0; color  < 0xffffffff;color += 0xf)
-	while(color > 0xff)
+	char a[]="TEST";
+	Console console;
+	Stdout stdout;
+	Boot_info.buffer = bootInfo.buffer;
+	Boot_info.font = bootInfo.font;
+	Boot_info.map = bootInfo.map;
+	Boot_info.mMap_size = bootInfo.mMap_size;
+	Boot_info.Descriptor_size = bootInfo.Descriptor_size;
+	console.init(bootInfo.buffer,bootInfo.font);
+	stdout.init(&console);
+	stdout << "descriptor size:";
+	stdout.flush();
+	stdout << (uint32_t)123 << "Hello\r\n";
+	stdout << -123 << "Hello\r\n";
+	stdout.flush();
+	while (1)
 	{
-		for(uint64_t i = 0; i <maxpx;++i)
-		{	
-			pixel[i] = color;
-		}
-		color--;
+		/* code */
 	}
-	return color;
+	
 }

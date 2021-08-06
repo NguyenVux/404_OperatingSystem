@@ -16,7 +16,7 @@ void  *memset(void *b, int c, int len)
     }
   return(b);
 }
-void *memcpy(void *restrict s1, const void *restrict s2, size_t n)
+void *memcpy(void *restrict s1, const void *s2, size_t n)
 {
     char* a = s1;
     char* b = s2;
@@ -51,6 +51,7 @@ int memcmp(void* L,void*R,uint64_t count)
 typedef struct 
 {
 	FrameBuffer* buffer;
+    PSF1_FONT* font;
     EFI_MEMORY_DESCRIPTOR* map;
     uint64_t mMap_size;
 	uint64_t Descriptor_size;
@@ -63,43 +64,34 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     EFI_SYSTEM_TABLE* ST = SystemTable;
     if(init_GOP(ImageHandle,SystemTable,&fBuffer))
     {
-	    ST->ConOut->OutputString(ST->ConOut, L"GOP Located \r\n");
-	    ST->ConOut->OutputString(ST->ConOut, L"GOP Base: 0x");
-	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.Base_Adrress,HEX));
-	    ST->ConOut->OutputString(ST->ConOut, L"\r\nScreen height: ");
-	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.height,DEC));
-	    ST->ConOut->OutputString(ST->ConOut, L"\r\nScreen Width: ");
-	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.width,DEC));
-	    ST->ConOut->OutputString(ST->ConOut, L"\r\nPixel per line: ");
-	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.Pixel_per_ScaneLine,DEC));
-	    ST->ConOut->OutputString(ST->ConOut, L"\r\nPixel Mode line: ");
-	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.pixel_mode,HEX));
-        Status = ST->ConOut->OutputString(ST->ConOut, L"\r\n");
-        Status = ST->ConIn->Reset(ST->ConIn, FALSE);
-        EFI_INPUT_KEY Key;
-        while ((Status = ST->ConIn->ReadKeyStroke(ST->ConIn, &Key)) == EFI_NOT_READY) ;
+        ST->ConOut->OutputString(ST->ConOut, L"Loading kernel \r\n");
+        uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST);
+        BootInfo Bootinfo;
+        ST->ConOut->OutputString(ST->ConOut, L"Loading font \r\n");
+        Bootinfo.font = Load_font(NULL,L"404OS\\zap-light18.psf",ImageHandle,ST);
+        if(Bootinfo.font == NULL)
+            ST->ConOut->OutputString(ST->ConOut, L"Can't font \r\n");
+        else
+            ST->ConOut->OutputString(ST->ConOut, L"font loaded \r\n");
+        Bootinfo.buffer = &fBuffer;
+        void(*kernel_start)(BootInfo) = ((__attribute__((sytemv_abi)) void(*)(BootInfo))start_ddr);
+        EFI_MEMORY_DESCRIPTOR* map= NULL;
+        UINTN mMap_size,Mapkey;
+        UINTN Descriptor_size;
+        UINT32 Descriptor_version;
+        {
+                SystemTable->BootServices->GetMemoryMap(&mMap_size,map,&Mapkey,&Descriptor_size,&Descriptor_version);
+                SystemTable->BootServices->AllocatePool(EfiLoaderData,mMap_size,(void**)&map);
+                SystemTable->BootServices->GetMemoryMap(&mMap_size,map,&Mapkey,&Descriptor_size,&Descriptor_version);
+        }
+        Bootinfo.map = map;
+        Bootinfo.Descriptor_size = Descriptor_size;
+        Bootinfo.mMap_size = mMap_size;
+        ST->BootServices->ExitBootServices(ImageHandle,Mapkey);
+        kernel_start(Bootinfo);
     }else{
-        ST->ConOut->OutputString(ST->ConOut, L"GOP Located Failed\r\n");
+        ST->ConOut->OutputString(ST->ConOut, L"Failed to init system\r\n");
     }
-    uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST);
-    BootInfo Bootinfo;
-    Bootinfo.buffer = &fBuffer;
-    int(*kernel_start)(BootInfo) = ((__attribute__((sytemv_abi)) int(*)(BootInfo))start_ddr);
-    ST->ConOut->OutputString(ST->ConOut, L"\r\n Test kernel: ");
-    EFI_MEMORY_DESCRIPTOR* map= NULL;
-	UINTN mMap_size,Mapkey;
-	UINTN Descriptor_size;
-	UINT32 Descriptor_version;
-	{
-			SystemTable->BootServices->GetMemoryMap(&mMap_size,map,&Mapkey,&Descriptor_size,&Descriptor_version);
-			SystemTable->BootServices->AllocatePool(EfiLoaderData,mMap_size,(void**)&map);
-			SystemTable->BootServices->GetMemoryMap(&mMap_size,map,&Mapkey,&Descriptor_size,&Descriptor_version);
-	}
-    Bootinfo.map = map;
-    Bootinfo.Descriptor_size = Descriptor_size;
-    Bootinfo.mMap_size = mMap_size;
-    ST->BootServices->ExitBootServices(ImageHandle,Mapkey);
-    kernel_start(Bootinfo);
     if (EFI_ERROR(Status))
         return Status; 
     return Status;

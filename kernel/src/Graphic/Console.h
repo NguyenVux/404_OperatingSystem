@@ -12,7 +12,7 @@ class Console
 public:
 	uint32_t col = 0;
 	uint32_t row = 0;
-	uint8_t spacing = 5;
+	uint8_t spacing = 2;
 	Position cursor;
 	FrameBuffer* buffer = NULL;
 	PSF1_FONT* font = NULL;

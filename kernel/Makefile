@@ -1,4 +1,4 @@
-CC=clang
+CC=clang++
 LD=clang
 CFLAGS =-target x86_64-unknown-windows \
 	-ffreestanding \
@@ -21,4 +21,5 @@ kernel:$(OBJ_FILES)
 	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $^
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp 
 	$(CC) $(CFLAGS) -c -o $@ $<
-
+clean:
+	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include *.* -File -Recurse | foreach { $$_.Delete()}"

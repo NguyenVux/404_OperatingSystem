@@ -14,7 +14,7 @@ FINALDIR = bin
 SRCDIR = src
 SRC_FILES = $(wildcard $(SRCDIR)/*.c)
 OBJ_FILES := $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRC_FILES))
-bootloader:link clean
+bootloader:link
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 link:$(OBJ_FILES) 

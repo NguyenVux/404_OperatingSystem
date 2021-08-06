@@ -1,8 +1,10 @@
-#include "Console.h"
+#include "Graphic\Console.h"
 
 void Console::init(FrameBuffer* _b, PSF1_FONT* _f) {
     buffer = _b;
     font = _f;
+    cursor.x=0;
+    cursor.y = 0;
 }
 
 void Console::print(char x,uint32_t color) {

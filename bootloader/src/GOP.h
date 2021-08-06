@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <efi.h>
 #include <efilib.h>
-
+#include "EFI_FS.h"
 
 #define IN
 #define OUT
@@ -23,4 +23,27 @@ extern int init_GOP(
 				OUT FrameBuffer* fBuffer
 				);
 
+
+
+
+#define PSF_MAGIC 0x436
+
+typedef struct{
+	unsigned short magic;
+	unsigned char mode;
+	unsigned char charsize;
+} PSF1_HEADER;
+
+
+typedef struct{
+	PSF1_HEADER* PSF1_HEADERl;
+	void* glyph_BUFFER;
+} PSF1_FONT;
+extern 
+PSF1_FONT* Load_font(
+				EFI_FILE* directory,
+				CHAR16* PATH,
+				EFI_HANDLE ImageHandle,
+				EFI_SYSTEM_TABLE *SystemTable
+				);
 #endif
