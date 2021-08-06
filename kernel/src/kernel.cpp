@@ -1,21 +1,14 @@
 #include "stdout.h"
 #include "stddef.h"
 #include "stdint.h"
-
+#include "efiMemory/efiMemory.h"
 extern "C" int _fltused = 0;
-struct EFI_MEMORY_DESCRIPTOR{
-    uint32_t                          Type;           // Field size is 32 bits followed by 32 bit pad
-    uint32_t                          Pad;
-    uint64_t            PhysicalStart;  // Field size is 64 bits
-    uint64_t             VirtualStart;   // Field size is 64 bits
-    uint64_t                          NumberOfPages;  // Field size is 64 bits
-    uint64_t                          Attribute;      // Field size is 64 bits
-};
+
 struct BootInfo
 {
 	FrameBuffer* buffer;
 	PSF1_FONT* font;
-	EFI_MEMORY_DESCRIPTOR *map;
+	void *map;
 	uint64_t mMap_size;
 	uint64_t Descriptor_size;
 };
@@ -34,14 +27,17 @@ extern "C" void _start(BootInfo bootInfo)
 	Boot_info.Descriptor_size = bootInfo.Descriptor_size;
 	console.init(bootInfo.buffer,bootInfo.font);
 	stdout.init(&console);
+	int segment_count = Boot_info.mMap_size/Boot_info.Descriptor_size;
 	stdout << "descriptor size:" << Boot_info.Descriptor_size << "\r\n";
-	stdout << "Map size:" << Boot_info.mMap_size << "\r\n";
-	stdout << "map count size:" << Boot_info.mMap_size/Boot_info.Descriptor_size << "\r\n";
-	stdout << "Test float:" << (float)1.25 << "\r\n";
+	stdout << "Map size:" << Boot_info.mMap_size << "- address:" << EFI_MEMORY_TYPE_STRINGS[0] <<"\r\n";
 	stdout.flush();
-	while (1)
+	EFI_MEMORY_DESCRIPTOR *ptr = (EFI_MEMORY_DESCRIPTOR*)Boot_info.map;
+	const char* string= EFI_MEMORY_TYPE_STRINGS[0];
+	for(int i=0; i < segment_count; ++i)
 	{
-		/* code */
+		stdout << ptr->Type << "\r\n";
+		stdout.flush();
+		ptr = ((EFI_MEMORY_DESCRIPTOR*)(uint64_t)ptr+Boot_info.Descriptor_size);
 	}
-	
+	stdout << "finish"; stdout.flush();
 }
