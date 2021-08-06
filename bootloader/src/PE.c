@@ -13,7 +13,6 @@ uint64_t LoadPE(
 	
 	if(pe_file == NULL)
 	{
-		ST->ConOut->OutputString(ST->ConOut, L"\r\nFile not found");
 		 return 0;
 	}
 	
@@ -26,9 +25,6 @@ uint64_t LoadPE(
 	{
 		return 0;
 	}
-	ST->ConOut->OutputString(ST->ConOut, L"\r\nPE header location: 0x");
-	ST->ConOut->OutputString(ST->ConOut, to_string(header.PE_start_addr,HEX));
-        ST->ConOut->OutputString(ST->ConOut, L"\r\n");
 	pe_file->SetPosition(pe_file,header.PE_start_addr);
 	PeHeader PEheader;
 	{
@@ -39,18 +35,11 @@ uint64_t LoadPE(
 	{
 		return 0;
 	}
-	ST->ConOut->OutputString(ST->ConOut, L"\r\nPE header magic: 0x");
-	ST->ConOut->OutputString(ST->ConOut, to_string(PEheader.mMagic,HEX));
-        ST->ConOut->OutputString(ST->ConOut, L"\r\n");
 	Pe32OptionalHeader Optional_header;
 	{
 		UINTN size =sizeof(Optional_header);
 		pe_file->Read(pe_file,&size,&Optional_header);
 	}
-	
-	ST->ConOut->OutputString(ST->ConOut, L"\r\nPE 32 header magic: 0x");
-	ST->ConOut->OutputString(ST->ConOut, to_string(Optional_header.mMagic,HEX));
-        ST->ConOut->OutputString(ST->ConOut, L"\r\n");
 	if(Optional_header.mMagic != PE_OPT_SIG)
 	{
 		return 0;

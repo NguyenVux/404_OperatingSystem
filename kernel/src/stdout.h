@@ -1,3 +1,6 @@
+#ifndef __STDOUT_H__
+#define __STDOUT_H__
+
 #pragma once
 //#include "stream/stream.h"
 #include "Graphic\Console.h"
@@ -23,6 +26,8 @@ public:
 	friend Stdout& operator<<(Stdout& out,int32_t x);
 	friend Stdout& operator<<(Stdout& out,uint16_t x);
 	friend Stdout& operator<<(Stdout& out,int16_t x);
+	friend Stdout& operator<<(Stdout& out,float x);
 	friend Stdout& operator<<(Stdout& out,const char* x);
 	friend Stdout& operator<<(Stdout& out,const char* x);
 };
+#endif // __STDOUT_H__

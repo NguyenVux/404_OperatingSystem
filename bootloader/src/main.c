@@ -64,15 +64,9 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     EFI_SYSTEM_TABLE* ST = SystemTable;
     if(init_GOP(ImageHandle,SystemTable,&fBuffer))
     {
-        ST->ConOut->OutputString(ST->ConOut, L"Loading kernel \r\n");
         uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST);
         BootInfo Bootinfo;
-        ST->ConOut->OutputString(ST->ConOut, L"Loading font \r\n");
         Bootinfo.font = Load_font(NULL,L"404OS\\zap-light18.psf",ImageHandle,ST);
-        if(Bootinfo.font == NULL)
-            ST->ConOut->OutputString(ST->ConOut, L"Can't font \r\n");
-        else
-            ST->ConOut->OutputString(ST->ConOut, L"font loaded \r\n");
         Bootinfo.buffer = &fBuffer;
         void(*kernel_start)(BootInfo) = ((__attribute__((sytemv_abi)) void(*)(BootInfo))start_ddr);
         EFI_MEMORY_DESCRIPTOR* map= NULL;
