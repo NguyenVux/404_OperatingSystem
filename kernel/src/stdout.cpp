@@ -37,7 +37,7 @@ void Stdout::flush()
 Stdout& operator<<(Stdout& out,float x) 
 {
 	int64_t intpart = (int64_t)x;
-	int64_t decpart = (int64_t)(x*100000);
+	int64_t decpart = (int64_t)((x-intpart)*100000);
 	out << intpart << "." << decpart;
 	return out;
 }
