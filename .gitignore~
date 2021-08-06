@@ -6,7 +6,7 @@ bin-release/
 VM/img
 # Other files and folders
 .settings/
-gnu-efi/*
+
 # Executables
 *.swf
 *.air

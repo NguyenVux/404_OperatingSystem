@@ -12,9 +12,18 @@ LDFLAGS =-target x86_64-unknown-windows \
 BUILDDIR = build
 FINALDIR = bin
 SRCDIR = src
-
-bootloader:
-	$(CC) $(CFLAGS) -c -o $(BUILDDIR)/main.o $(SRCDIR)/main.c
+SRC_FILES = $(wildcard $(SRCDIR)/*.c)
+OBJ_FILES := $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRC_FILES))
+bootloader:link clean
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+link:$(OBJ_FILES) 
 	$(CC) $(CFLAGS) -c -o $(BUILDDIR)/data.o ../gnu-efi/lib/data.c
+	$(CC) $(LDFLAGS) -o $(FINALDIR)/bootx64.efi $^ $(BUILDDIR)/data.o
+
+clean:
+	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include *.* -File -Recurse | foreach { $$_.Delete()}"
+test:
+	$(CC) $(CFLAGS) -c -o $(BUILDDIR)/main.o $(SRCDIR)/main.c
 	$(CC) $(LDFLAGS) -o $(FINALDIR)/bootx64.efi $(BUILDDIR)/main.o $(BUILDDIR)/data.o
 

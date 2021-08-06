@@ -11,6 +11,7 @@ dd if=/dev/zero of="$VMDIR/$OSNAME.img" bs=512 count=93750
 	mmd -i "$VMDIR/$OSNAME.img" ::/404OS
 	mcopy -i "$VMDIR/$OSNAME.img" "bootloader/$BUILDDIR/bootx64.efi" ::/EFI/BOOT
 	mcopy -i "$VMDIR/$OSNAME.img" "$VMDIR/startup.nsh" ::
+        mcopy -i "$VMDIR/$OSNAME.img" "$KERNELDIR/$BUILDDIR/kernel.sys" ::404OS/
+	#/404OS
 for filename in "$KERNELDIR/$BUILDDIR/*"; do
-        mcopy -i "$VMDIR/$OSNAME.img" $filename ::/404OS
 done

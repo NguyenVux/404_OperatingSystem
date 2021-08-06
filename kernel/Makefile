@@ -8,7 +8,7 @@ CFLAGS =-target x86_64-unknown-windows \
 LDFLAGS =-target x86_64-unknown-windows \
 	-nostdlib \
 	-Wl,-entry:_start \
-	-Wl,-subsystem:EFI_APPLICATION \
+	-Wl,-subsystem:efi_application \
 	-fuse-ld=lld-link
 
 	
@@ -16,7 +16,6 @@ BUILDDIR = build
 FINALDIR = bin
 SRCDIR = src
 SRC_FILES = $(wildcard $(SRCDIR)/*.cpp)
-#OBJ_FILES = $(wildcard $(BUILDDIR)/*.o)
 OBJ_FILES := $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(SRC_FILES))
 kernel:$(OBJ_FILES)
 	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $^
