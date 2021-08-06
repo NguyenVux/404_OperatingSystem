@@ -12,6 +12,7 @@ extern int init_GOP(EFI_HANDLE ImageHandle,EFI_SYSTEM_TABLE *SystemTable,FrameBu
 	}
 	fBuffer->Base_Adrress = (void*)gop->Mode->FrameBufferBase;
 	fBuffer->Buffer_Size = gop->Mode->FrameBufferSize;
+	fBuffer->pixel_mode = (int)gop->Mode->Info->PixelFormat;
 	fBuffer->width = gop->Mode->Info->HorizontalResolution;
 	fBuffer->height = gop->Mode->Info->VerticalResolution;
 	fBuffer->Pixel_per_ScaneLine = gop->Mode->Info->PixelsPerScanLine;

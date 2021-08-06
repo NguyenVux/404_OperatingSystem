@@ -15,6 +15,7 @@ typedef struct{
 	unsigned int width;
 	unsigned int height;
 	unsigned int Pixel_per_ScaneLine;
+	int pixel_mode;
 } FrameBuffer;
 extern int init_GOP(
 				IN EFI_HANDLE ImageHandle,

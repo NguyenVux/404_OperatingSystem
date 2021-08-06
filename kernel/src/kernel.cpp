@@ -1,4 +1,4 @@
-#include "GraphicDriver\graphic.h"
+#include "Graphic\graphic.h"
 #include "stddef.h"
 #include "stdint.h"
 struct EFI_MEMORY_DESCRIPTOR{
@@ -21,13 +21,17 @@ struct BootInfo
 
 extern "C" int _start(BootInfo bootInfo)
 {
-	uint64_t* pixel = (uint64_t*)bootInfo.buffer->Base_Adrress;
+	uint32_t* pixel = (uint32_t*)bootInfo.buffer->Base_Adrress;
 	uint64_t maxpx = bootInfo.buffer->height*bootInfo.buffer->Pixel_per_ScaneLine;
-	for(uint64_t i = 0; i <maxpx/2;++i)
+	uint32_t color = 0x00ffff;
+	//for(color = 0; color  < 0xffffffff;color += 0xf)
+	while(color > 0xff)
 	{
-		*pixel = 0xffffffffffffffff;
-		pixel++;
+		for(uint64_t i = 0; i <maxpx;++i)
+		{	
+			pixel[i] = color;
+		}
+		color--;
 	}
-	asm("hlt");
-	return 1;
+	return color;
 }

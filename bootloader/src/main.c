@@ -72,7 +72,12 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.width,DEC));
 	    ST->ConOut->OutputString(ST->ConOut, L"\r\nPixel per line: ");
 	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.Pixel_per_ScaneLine,DEC));
+	    ST->ConOut->OutputString(ST->ConOut, L"\r\nPixel Mode line: ");
+	    ST->ConOut->OutputString(ST->ConOut, to_string(fBuffer.pixel_mode,HEX));
         Status = ST->ConOut->OutputString(ST->ConOut, L"\r\n");
+        Status = ST->ConIn->Reset(ST->ConIn, FALSE);
+        EFI_INPUT_KEY Key;
+        while ((Status = ST->ConIn->ReadKeyStroke(ST->ConIn, &Key)) == EFI_NOT_READY) ;
     }else{
         ST->ConOut->OutputString(ST->ConOut, L"GOP Located Failed\r\n");
     }
@@ -95,8 +100,6 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     Bootinfo.mMap_size = mMap_size;
     ST->BootServices->ExitBootServices(ImageHandle,Mapkey);
     kernel_start(Bootinfo);
-	//ST->ConOut->OutputString(ST->ConOut, to_string(kernel_start(Bootinfo),DEC));
-    //Status = ST->ConOut->OutputString(ST->ConOut, L"\r\n");
     if (EFI_ERROR(Status))
         return Status; 
     return Status;

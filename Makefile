@@ -1,12 +1,15 @@
 CC = clang
 CPP = clang++
 WSL = C:\Windows\System32\wsl.exe
-MAKE = mingw32-make
+MAKE = make
 GLOBAL = CC=$(CC) CPP=$(CPP)
 .PHONY: bootloader kernel
 bootloader:
 	$(MAKE) -C bootloader bootloader $(GLOBAL)
 kernel:
 	$(MAKE) -C kernel kernel $(GLOBAL)
-test: 
+buildimg: 
 	pwsh -c "wsl ./buildimg.sh"
+run:
+	pwsh -f run2.ps1
+all: bootloader kernel buildimg run
