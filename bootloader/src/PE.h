@@ -81,6 +81,48 @@ typedef struct  {
 	uint16_t mNumberOfLinenumbers;
 	uint32_t mCharacteristics;
 }IMAGE_SECTION_HEADER;
+typedef IMAGE_SECTION_HEADER IMGSECTION_HEADER;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#define IMAGE_REL_BASED_ABSOLUTE 		0
+#define IMAGE_REL_BASED_HIGH 			1
+#define IMAGE_REL_BASED_LOW 			2
+#define IMAGE_REL_BASED_HIGHLOW 		3
+#define IMAGE_REL_BASED_HIGHADJ 		4
+#define IMAGE_REL_BASED_MIPS_JMPADDR 		5
+#define IMAGE_REL_BASED_ARM_MOV32 		5
+#define IMAGE_REL_BASED_RISCV_HIGH20 		5 
+#define IMAGE_REL_RESERVED 			6 //must be zero
+#define IMAGE_REL_BASED_THUMB_MOV32 		7
+#define IMAGE_REL_BASED_RISCV_LOW12I 		7
+#define IMAGE_REL_BASED_RISCV_LOW12S 		8
+#define IMAGE_REL_BASED_MIPS_JMPADDR16 		9
+#define  IMAGE_REL_BASED_DIR64 			10
+typedef struct
+{
+	uint32_t page_RVA;
+	uint32_t blockSize;
+}reloc_block;
+typedef struct
+{
+	uint16_t page_rva_offset: 12;
+	uint16_t type:4;
+}RELOC_ENTRY;
+
+extern char* section_name[];
 extern uint64_t LoadPE(
 		EFI_FILE* directory,
 		CHAR16* PATH,
