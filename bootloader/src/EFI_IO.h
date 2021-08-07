@@ -9,8 +9,10 @@
 #define DEC 2
 
 
-extern CHAR16 buffer[1024];
+extern CHAR16 buffer[2048];
 extern CHAR16* num_table;
+extern CHAR16* char8to16;
 extern CHAR16* to_string(uint64_t input,int format);
+extern CHAR16* CHAR16TO18(char* t);
 
 #endif

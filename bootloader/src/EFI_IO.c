@@ -1,6 +1,7 @@
 #include "EFI_IO.h"
-CHAR16 buffer[1024];
+CHAR16 buffer[2048];
 CHAR16* num_table = L"0123456789ABCDEF";
+CHAR16* char8to16 = L"!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 CHAR16* to_string(uint64_t in,int format)
 {
     if (in == 0)
@@ -66,5 +67,18 @@ CHAR16* to_string(uint64_t in,int format)
     buffer[3] = 'N';
     buffer[4] = 'G';
     buffer[5] = '\0';
+    return buffer;
+}
+
+extern CHAR16* CHAR16TO18(char* t) 
+{
+    int index = 0;
+    while(*t !=0)
+    {
+        buffer[index] = char8to16[*t-'!'];
+        t++;
+        index++;
+    }
+    buffer[index] = '\0';
     return buffer;
 }
