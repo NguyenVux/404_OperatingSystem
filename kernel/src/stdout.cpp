@@ -1,9 +1,11 @@
 #include "stdout.h"
 
+Endl endl;
 
-void Stdout::init(Console* console)
+void Stdout::init(Console* console, uint32_t color)
 {
 	this->_console = console;
+	this->color = color;
 	head=0;
 }
 
@@ -29,9 +31,16 @@ void Stdout::flush()
 {
 		for (int i = 0; i < head; i++)
 		{
-			_console->print(buffer[i],0);
+			_console->print(buffer[i],color);
 		}
 		head= 0;
+}
+
+Stdout& operator<<(Stdout& out,Endl x) 
+{
+	out << "\r\n";
+	out.flush();
+	return out;
 }
 
 Stdout& operator<<(Stdout& out,float x) 

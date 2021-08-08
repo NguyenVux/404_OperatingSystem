@@ -1,4 +1,4 @@
-#include "Graphic\Console.h"
+#include "Console.h"
 
 void Console::init(FrameBuffer* _b, PSF1_FONT* _f) {
     buffer = _b;
@@ -32,7 +32,11 @@ void Console::print(char x,uint32_t color) {
 		{
 			if( (*fontPtr &(0b10000000 >> x)) >0)
 			{
-				*(pixel_pointer+(x+cursor.x)+((y+cursor.y)*buffer->Pixel_per_ScaneLine)) = 0xffffffff;
+				uint64_t mem_addr = (x+cursor.x)+((y+cursor.y)*buffer->Pixel_per_ScaneLine);
+				if(mem_addr < buffer->height*buffer->Pixel_per_ScaneLine)
+				{
+					*(pixel_pointer+mem_addr) = color;
+				}
 			}
 		}
 		++fontPtr;
