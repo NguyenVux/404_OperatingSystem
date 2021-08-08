@@ -104,6 +104,13 @@ uint64_t LoadPE(
 				uint64_t* location = (uint64_t*)(addr+block->page_RVA+entry[i].page_rva_offset);
 				*location+= delta;
 			}
+			else if(entry[i].type != IMAGE_REL_BASED_ABSOLUTE)
+			{
+				ST->ConOut->OutputString(ST->ConOut,L"Reloc type not support: 0x");
+				ST->ConOut->OutputString(ST->ConOut,to_string(entry[i].type,HEX));
+				ST->ConOut->OutputString(ST->ConOut,L"\r\n");
+				return 0;
+			}
 		}
 		block = (reloc_block*)((uint64_t)block+ block->blockSize);
 

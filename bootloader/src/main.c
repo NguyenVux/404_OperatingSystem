@@ -65,6 +65,10 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     if(init_GOP(ImageHandle,SystemTable,&fBuffer))
     {
         uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST);
+        if(start_ddr == 0)
+        {
+            return Status;
+        }
         BootInfo Bootinfo;
         Bootinfo.font = Load_font(NULL,L"404OS\\zap-light18.psf",ImageHandle,ST);
         Bootinfo.buffer = &fBuffer;
