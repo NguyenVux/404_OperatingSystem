@@ -9,7 +9,14 @@
 		"hash_set": "c",
 		"string_view": "c",
 		"initializer_list": "c",
-		"utility": "c"
+		"utility": "c",
+		"*.tcc": "cpp",
+		"unordered_map": "cpp",
+		"fstream": "cpp",
+		"istream": "cpp",
+		"numeric": "cpp",
+		"ostream": "cpp",
+		"sstream": "cpp"
 	},
 	"C_Cpp.errorSquiggles": "Enabled"
 }
