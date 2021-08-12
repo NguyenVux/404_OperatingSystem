@@ -24,7 +24,9 @@ uint64_t LoadPE(
 		EFI_FILE* directory,
 		CHAR16* PATH,
 		EFI_HANDLE ImageHandle,
-		EFI_SYSTEM_TABLE *SystemTable) 
+		EFI_SYSTEM_TABLE *SystemTable,
+		uint64_t* kernel_size,
+		uint64_t* kernel_base) 
 {
 	
 	EFI_SYSTEM_TABLE* ST = SystemTable;
@@ -69,7 +71,8 @@ uint64_t LoadPE(
 	pe_file->GetPosition(pe_file,&next_segment);
 	next_segment += PEheader.mSizeOfOptionalHeader-sizeof(Optional_header);
 	pe_file->SetPosition(pe_file,next_segment);
-
+	ST->ConOut->OutputString(ST->ConOut,L"Loading");
+	ST->ConOut->OutputString(ST->ConOut,L"\r\n");
 	IMGSECTION_HEADER *imgHeader = Read_section_header(pe_file,PEheader.mNumberOfSections,ImageHandle,SystemTable);
 
 
@@ -115,6 +118,10 @@ uint64_t LoadPE(
 		block = (reloc_block*)((uint64_t)block+ block->blockSize);
 
 	}
+	*kernel_base = addr;
+	*kernel_size = Optional_header.mSizeOfImage;
+	ST->ConOut->OutputString(ST->ConOut,L"finish Loading");
+	ST->ConOut->OutputString(ST->ConOut,L"\r\n");
 	pe_file->Close(pe_file);
 	return addr+Optional_header.mAddressOfEntryPoint;
 }

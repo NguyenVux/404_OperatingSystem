@@ -1,5 +1,5 @@
 #include "page_frame_allocator.h"
-void PageFrameAllocator::ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize) 
+void PageFrameAllocator::ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize,uint64_t kernel_size,void* kernel_base) 
 {
 	if(initialize) return;
 	initialize = true;
@@ -25,6 +25,7 @@ void PageFrameAllocator::ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSiz
 	uint64_t bitmap_size =largest_free_segment_size/4096/8 +1;
 	page_bitmap.init((uint8_t*)largest_free_segment,bitmap_size);
 	LockPages(page_bitmap.Buffer,bitmap_size/4096+1);
+	LockPages(kernel_base,kernel_size/4096+1);
 	desc = mMap;
 	for(uint64_t i = 0; i < entries; ++i)
 	{

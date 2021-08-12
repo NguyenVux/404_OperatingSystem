@@ -12,6 +12,8 @@ struct BootInfo
 	void *map;
 	uint64_t mMap_size;
 	uint64_t Descriptor_size;
+	uint64_t kernel_size;
+    	void* kernel_base;
 };
 
 BootInfo Boot_info;
@@ -22,25 +24,16 @@ extern "C" void _start(BootInfo bootInfo)
 	char a[]="TEST";
 	Console console;
 	PageFrameAllocator page_frame_allocator;
-
-
-	Boot_info.buffer = bootInfo.buffer;
-	Boot_info.font = bootInfo.font;
-	Boot_info.map = bootInfo.map;
-	Boot_info.mMap_size = bootInfo.mMap_size;
-	Boot_info.Descriptor_size = bootInfo.Descriptor_size;
 	console.init(bootInfo.buffer,bootInfo.font);
 	stdout.init(&console,0xffffffff);
-
-
-
 	page_frame_allocator.ReadEFIMemory(
-		(EFI_MEMORY_DESCRIPTOR*)Boot_info.map,
-		Boot_info.mMap_size,
-		Boot_info.Descriptor_size);
-	int segment_count = Boot_info.mMap_size/Boot_info.Descriptor_size;
+		(EFI_MEMORY_DESCRIPTOR*)bootInfo.map,
+		bootInfo.mMap_size,
+		bootInfo.Descriptor_size,bootInfo.kernel_size,(void*)bootInfo.kernel_base);
+	int segment_count = bootInfo.mMap_size/bootInfo.Descriptor_size;
 	stdout << "Free memory size:"<< page_frame_allocator.getFreeMemory()/1024 << " KB\r\n"
 		<< "Used memory: " << (page_frame_allocator.getUsedMemory()/1024)<<" KB\r\n"
-		<< "Reserved size:" <<page_frame_allocator.getReservedMemory()/1024 << "KB" << endl;
+		<< "Reserved size:" <<page_frame_allocator.getReservedMemory()/1024 << "KB"<<"\r\n"
+		<< "kernel Base: " << (uint64_t)bootInfo.kernel_base << endl;
 	stdout.flush();
 }

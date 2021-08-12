@@ -55,6 +55,8 @@ typedef struct
     EFI_MEMORY_DESCRIPTOR* map;
     uint64_t mMap_size;
 	uint64_t Descriptor_size;
+    uint64_t kernel_size;
+    uint64_t kernel_base;
 } BootInfo;
 
 FrameBuffer fBuffer;
@@ -64,12 +66,12 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     EFI_SYSTEM_TABLE* ST = SystemTable;
     if(init_GOP(ImageHandle,SystemTable,&fBuffer))
     {
-        uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST);
+        BootInfo Bootinfo;
+        uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST,&Bootinfo.kernel_size,&Bootinfo.kernel_size);
         if(start_ddr == 0)
         {
             return Status;
         }
-        BootInfo Bootinfo;
         Bootinfo.font = Load_font(NULL,L"404OS\\zap-light18.psf",ImageHandle,ST);
         Bootinfo.buffer = &fBuffer;
         void(*kernel_start)(BootInfo) = ((__attribute__((sytemv_abi)) void(*)(BootInfo))start_ddr);

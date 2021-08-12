@@ -2,7 +2,6 @@
 bin-debug/
 bin-release/
 [Oo]bj/
-[Bb]in/
 VM/img
 # Other files and folders
 .settings/

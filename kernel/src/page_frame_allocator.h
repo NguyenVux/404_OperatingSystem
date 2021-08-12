@@ -22,7 +22,7 @@ private:
 	void LockPages(void* addr,uint64_t count);
 public:
 	PageFrameAllocator();
-	void ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize);
+	void ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize,uint64_t kernel_size,void* kernel_base);
 	void ReservePage(void* addr);
 	void unReservePage(void* addr);
 	void ReservePages(void* addr,uint64_t count);

@@ -127,7 +127,9 @@ extern uint64_t LoadPE(
 		EFI_FILE* directory,
 		CHAR16* PATH,
 		EFI_HANDLE ImageHandle,
-		EFI_SYSTEM_TABLE *SystemTable
+		EFI_SYSTEM_TABLE *SystemTable,
+		uint64_t* kernel_size,
+		uint64_t* kernel_base
 		);
 extern int memcmp(void* L,void*R,uint64_t count);
 #endif
