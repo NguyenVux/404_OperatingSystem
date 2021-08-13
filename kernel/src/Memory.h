@@ -12,4 +12,6 @@ struct EFI_MEMORY_DESCRIPTOR{
 };
 
 extern uint64_t GetMemorySize(EFI_MEMORY_DESCRIPTOR*,uint64_t entries,uint64_t descriptor_size);
+extern void* memset(void* base,uint8_t value, uint64_t size);
+extern void* memcpy(void* dest,const void* src, uint64_t size);
 #endif // __EFIMEMORY_H__

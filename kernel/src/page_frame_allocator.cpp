@@ -1,6 +1,8 @@
 #include "page_frame_allocator.h"
 void PageFrameAllocator::ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize,uint64_t kernel_size,void* kernel_base) 
 {
+	stdout << "Total memory 1: " << freeMemory <<endl;
+	stdout << "Total memory 1: " << (uint8_t)initialize <<endl;
 	if(initialize) return;
 	initialize = true;
 	uint64_t entries = mapSize/DescriptorSize;
@@ -70,11 +72,12 @@ void PageFrameAllocator::LockPages(void* addr,uint64_t count)
 	}
 }
 
-PageFrameAllocator::PageFrameAllocator() 
+void PageFrameAllocator::init() 
 {
 	usedMemory = 0;
 	freeMemory = 0;
 	reservedMemory =0;
+	initialize = false;
 }
 void PageFrameAllocator::ReservePage(void* addr) 
 {
@@ -123,3 +126,16 @@ uint64_t PageFrameAllocator::getUsedMemory()
 {
 	return usedMemory;
 }
+
+void* PageFrameAllocator::requestPage() 
+{
+    for (uint64_t index = 0; index < page_bitmap.Size * 8; index++){
+        if (page_bitmap[index] == true) continue;
+        LockPage((void*)(index * 4096));
+        return (void*)(index * 4096);
+    }
+
+    return NULL; // Page Frame Swap to file
+}
+
+PageFrameAllocator gPageFrameAllocator;

@@ -2,16 +2,15 @@
 #define __PAGE_FRAME_ALLOCATOR_H__
 #include <stddef.h>
 #include <stdint.h>
-#include "efiMemory.h"
+#include "Memory.h"
 #include "bitmap.h"
 #include "stdout.h"
-
 
 #define EFI_CONVENTIONAL_MEMORY 7
 class PageFrameAllocator
 {
 private:
-	bool initialize =false;
+	bool initialize = false;
 	uint64_t freeMemory =0 ;
 	uint64_t reservedMemory = 0;
 	uint64_t usedMemory = 0;
@@ -21,7 +20,7 @@ private:
 	void FreePages(void* addr,uint64_t count);
 	void LockPages(void* addr,uint64_t count);
 public:
-	PageFrameAllocator();
+	void init();
 	void ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize,uint64_t kernel_size,void* kernel_base);
 	void ReservePage(void* addr);
 	void unReservePage(void* addr);
@@ -30,11 +29,12 @@ public:
 	uint64_t getFreeMemory();
 	uint64_t getReservedMemory();
 	uint64_t getUsedMemory();
+	void* requestPage();
 
 };
 
 
-
+extern PageFrameAllocator gPageFrameAllocator;
 
 
 #endif // __PAGE_FRAME_ALLOCATOR_H__

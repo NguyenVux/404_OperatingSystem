@@ -4,6 +4,7 @@
 void BITMAP::init(uint8_t* location,uint64_t size) 
 {
 	Buffer = location;
+	this->Size = size;
 	uint64_t *arr = (uint64_t*) Buffer;
 	for(uint64_t i =0; i < size;++i)
 	{

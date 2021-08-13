@@ -3,7 +3,6 @@ OSNAME="404OS"
 BUILDDIR="bin"
 KERNELDIR="kernel"
 #mv bootloader/$BUILDDIR/bootx64.efi VM/img/main.efi
-rm "$VMDIR/$OSNAME.img"
 dd if=/dev/zero of="$VMDIR/$OSNAME.img" bs=512 count=93750
 	mformat -i "$VMDIR/$OSNAME.img" -f 1440 ::
 	printf "Create ::/EFI directory\n"
