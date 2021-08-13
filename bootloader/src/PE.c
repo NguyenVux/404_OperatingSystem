@@ -79,7 +79,7 @@ uint64_t LoadPE(
 
 	uint64_t pages = Optional_header.mSizeOfImage / 0x1000;
 	uint64_t addr = 0;
-	ST->BootServices->AllocatePages(AllocateAnyPages,EfiLoaderData,pages,&addr);
+	ST->BootServices->AllocatePages(AllocateAddress,EfiLoaderData,pages,&addr);
 	void* reloc_table;
 	for(int i = 0; i < PEheader.mNumberOfSections;++i)		
 	{

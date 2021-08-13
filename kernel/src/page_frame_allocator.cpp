@@ -1,8 +1,6 @@
 #include "page_frame_allocator.h"
 void PageFrameAllocator::ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize,uint64_t kernel_size,void* kernel_base) 
 {
-	stdout << "Total memory 1: " << freeMemory <<endl;
-	stdout << "Total memory 1: " << (uint8_t)initialize <<endl;
 	if(initialize) return;
 	initialize = true;
 	uint64_t entries = mapSize/DescriptorSize;

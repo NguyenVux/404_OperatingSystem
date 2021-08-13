@@ -67,13 +67,16 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     if(init_GOP(ImageHandle,SystemTable,&fBuffer))
     {
         BootInfo Bootinfo;
-        uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST,&Bootinfo.kernel_size,&Bootinfo.kernel_size);
+        uint64_t start_ddr = LoadPE(NULL,L"404OS\\kernel.sys",ImageHandle,ST,&Bootinfo.kernel_size,&Bootinfo.kernel_base);
         if(start_ddr == 0)
         {
             return Status;
         }
         Bootinfo.font = Load_font(NULL,L"404OS\\zap-light18.psf",ImageHandle,ST);
         Bootinfo.buffer = &fBuffer;
+        ST->ConOut->OutputString(ST->ConOut,L"kernel base: 0x");
+        ST->ConOut->OutputString(ST->ConOut,to_string(Bootinfo.kernel_base,HEX));
+        ST->ConOut->OutputString(ST->ConOut,L"\r\n");
         void(*kernel_start)(BootInfo) = ((__attribute__((sytemv_abi)) void(*)(BootInfo))start_ddr);
         EFI_MEMORY_DESCRIPTOR* map= NULL;
         UINTN mMap_size,Mapkey;

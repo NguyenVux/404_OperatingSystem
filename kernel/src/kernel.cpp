@@ -26,8 +26,6 @@ extern "C" void _start(BootInfo bootInfo)
 	Console console;
 	console.init(bootInfo.buffer,bootInfo.font);
 	stdout.init(&console,0xffffffff);
-	PageTable* PML4;
-	PageTableManager pTManager(PML4);
 	gPageFrameAllocator.init();
 	gPageFrameAllocator.ReadEFIMemory(
 		(EFI_MEMORY_DESCRIPTOR*)bootInfo.map,
@@ -38,6 +36,30 @@ extern "C" void _start(BootInfo bootInfo)
 	stdout << "Free memory size:"<< gPageFrameAllocator.getFreeMemory()/1024 << " KB\r\n"
 		<< "Used memory: " << (gPageFrameAllocator.getUsedMemory()/1024)<<" KB\r\n"
 		<< "Reserved size:" <<gPageFrameAllocator.getReservedMemory()/1024 << "KB"<<"\r\n"
-		<< "kernel Base: " << (uint64_t)bootInfo.kernel_base << endl;
-	stdout.flush();
+		<< "kernel Base: " << (uint64_t)bootInfo.kernel_base << endl
+		<< "buffer base:" <<(uint64_t)bootInfo.buffer->Base_Adrress <<endl;
+	stdout << "HELLO" << endl;
+	uint64_t size = GetMemorySize((EFI_MEMORY_DESCRIPTOR*)bootInfo.map,
+		bootInfo.mMap_size/bootInfo.Descriptor_size,
+		bootInfo.Descriptor_size);
+	PageTable* PML4;
+	stdout << "HELLO" << endl;
+	PageTableManager pTManager(PML4);
+	PML4 = (PageTable*)gPageFrameAllocator.requestPage();
+	memset(PML4, 0, 0x1000);
+	for(uint64_t t = 0; t < size; t +=0x1000)
+	{
+		pTManager.MapMemory((void*)t,(void*)t);
+	}
+	stdout << "HELLO" << endl;
+	// uint64_t base = (uint64_t)bootInfo.buffer->Base_Adrress;
+	// uint64_t bsize = bootInfo.buffer->Buffer_Size;
+	// for(uint64_t t = base; t < base+bsize;t+=0x1000)
+	// {
+	// 	pTManager.MapMemory((void*)t,(void*)t);
+	// }
+	asm("mov %0,%%cr3" : :"r"(PML4));
+	// stdout << "HELLO" << endl;
+	// stdout.flush();
+	while(1){}
 }
