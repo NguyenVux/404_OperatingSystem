@@ -6,22 +6,23 @@
 #include "Memory.h"
 #include "page_map_indexer.h"
 struct PageDirectoryEntry {
-    bool Present : 1;
-    bool ReadWrite : 1;
-    bool UserSuper : 1;
-    bool WriteThrough : 1;
-    bool CacheDisabled : 1;
-    bool Accessed : 1;
-    bool ignore0 : 1; 
-    bool LargerPages : 1;
-    bool ingore1 : 1;
-    uint8_t Available : 3;
+    uint64_t Present : 1;
+    uint64_t ReadWrite : 1;
+    uint64_t UserSuper : 1;
+    uint64_t WriteThrough : 1;
+    uint64_t CacheDisabled : 1;
+    uint64_t Accessed : 1;
+    uint64_t ignore0 : 1; 
+    uint64_t LargerPages : 1;
+    uint64_t ingore1 : 1;
+    uint64_t Available : 3;
     uint64_t Address : 52;
 };
 
-struct PageTable { 
+struct alignas(0x1000) PageTable { 
     PageDirectoryEntry entries [512];
-}__attribute__((aligned(0x1000)));
+};
+// }__attribute__((aligned(0x1000)));
 
 
 class PageTableManager {

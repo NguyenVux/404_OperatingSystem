@@ -132,7 +132,7 @@ void* PageFrameAllocator::requestPage()
         LockPage((void*)(index * 4096));
         return (void*)(index * 4096);
     }
-
+	stdout << "request error:"  << endl;
     return NULL; // Page Frame Swap to file
 }
 

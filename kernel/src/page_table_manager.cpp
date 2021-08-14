@@ -1,5 +1,5 @@
 #include "page_table_manager.h"
-
+#include "stdout.h"
 
 PageTableManager::PageTableManager(PageTable* PML4Address){
     this->PML4 = PML4Address;
@@ -8,11 +8,11 @@ PageTableManager::PageTableManager(PageTable* PML4Address){
 void PageTableManager::MapMemory(void* virtualMemory, void* physicalMemory){
     PageMapIndexer indexer = PageMapIndexer((uint64_t)virtualMemory);
     PageDirectoryEntry PDE;
-
     PDE = PML4->entries[indexer.PDP_i];
     PageTable* PDP;
     if (!PDE.Present){
         PDP = (PageTable*)gPageFrameAllocator.requestPage();
+        stdout << "addr: " << (uint64_t)PDP << endl;
         memset(PDP, 0, 0x1000);
         PDE.Address = (uint64_t)PDP >> 12;
         PDE.Present = true;
@@ -23,8 +23,6 @@ void PageTableManager::MapMemory(void* virtualMemory, void* physicalMemory){
     {
         PDP = (PageTable*)((uint64_t)PDE.Address << 12);
     }
-    
-    
     PDE = PDP->entries[indexer.PD_i];
     PageTable* PD;
     if (!PDE.Present){
