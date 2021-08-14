@@ -1,4 +1,7 @@
 #include "page_frame_allocator.h"
+
+
+uint64_t last_frame_allocated = 0;
 void PageFrameAllocator::ReadEFIMemory(EFI_MEMORY_DESCRIPTOR* mMap,size_t mapSize,size_t DescriptorSize,uint64_t kernel_size,void* kernel_base) 
 {
 	if(initialize) return;
@@ -59,6 +62,7 @@ void PageFrameAllocator::FreePages(void* addr,uint64_t count)
 	for(uint64_t i =0; i < count; i++)
 	{
 		FreePage((void*)((uint64_t)addr+(i*4096)));
+		if(last_frame_allocated > ((uint64_t)addr/0x1000)) last_frame_allocated = (uint64_t)addr;
 	}
 }
 
@@ -107,6 +111,7 @@ void PageFrameAllocator::unReservePages(void* addr,uint64_t count)
 	for(uint64_t i =0; i < count; i++)
 	{
 		unReservePage((void*)((uint64_t)addr+(i*4096)));
+		if(last_frame_allocated > ((uint64_t)addr/0x1000)) last_frame_allocated = (uint64_t)addr;
 	}
 }
 
@@ -127,12 +132,11 @@ uint64_t PageFrameAllocator::getUsedMemory()
 
 void* PageFrameAllocator::requestPage() 
 {
-    for (uint64_t index = 0; index < page_bitmap.Size * 8; index++){
-        if (page_bitmap[index] == true) continue;
-        LockPage((void*)(index * 4096));
-        return (void*)(index * 4096);
+    for (; last_frame_allocated < page_bitmap.Size * 8; last_frame_allocated++){
+        if (page_bitmap[last_frame_allocated] == true) continue;
+        LockPage((void*)(last_frame_allocated * 4096));
+        return (void*)(last_frame_allocated * 4096);
     }
-	stdout << "request error:"  << endl;
     return NULL; // Page Frame Swap to file
 }
 

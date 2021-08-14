@@ -1,7 +1,7 @@
 #include "stdout.h"
 
 Endl endl;
-
+Stdout stdout;
 void Stdout::init(Console* console, uint32_t color)
 {
 	this->_console = console;

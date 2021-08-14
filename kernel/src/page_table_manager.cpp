@@ -1,5 +1,8 @@
 #include "page_table_manager.h"
 #include "stdout.h"
+PageTable *PML4 = NULL;
+PageTableManager gPageTableManager;
+
 
 PageTableManager::PageTableManager(PageTable* PML4Address){
     this->PML4 = PML4Address;

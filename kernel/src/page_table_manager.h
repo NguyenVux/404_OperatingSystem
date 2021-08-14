@@ -27,8 +27,13 @@ struct alignas(0x1000) PageTable {
 
 class PageTableManager {
     public:
+    PageTableManager(){}
     PageTableManager(PageTable* PML4Address);
     PageTable* PML4;
     void MapMemory(void* virtualMemory, void* physicalMemory);
 };
+
+
+extern PageTable *PML4;
+extern PageTableManager gPageTableManager;
 #endif // __PAGE_TABLE_MANAGER_H__

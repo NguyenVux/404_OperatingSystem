@@ -1,5 +1,7 @@
 #include "Console.h"
 
+
+Console console;
 void Console::init(FrameBuffer* _b, PSF1_FONT* _f) {
     buffer = _b;
     font = _f;

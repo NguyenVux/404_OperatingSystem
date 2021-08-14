@@ -19,3 +19,4 @@ public:
 	void init(FrameBuffer*,PSF1_FONT*);
 	void print(char,uint32_t);
 };
+extern Console console;
