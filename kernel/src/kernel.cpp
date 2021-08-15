@@ -1,11 +1,7 @@
 #include "kernelUtil.h"
 
 
-struct GDT 
-{
-	int a;
-	uint64_t b;
-}__attribute__((packed));
+
 
 
 extern "C" void _start(BootInfo bootInfo)
@@ -21,5 +17,4 @@ extern "C" void _start(BootInfo bootInfo)
 	       << "kernel Base: " << (uint64_t)bootInfo.kernel_base << endl
 	       << "buffer base:" << (uint64_t)bootInfo.buffer->Base_Adrress << endl;
 	stdout << "HELLO" << endl;
-	stdout << "PACKED size: "<< sizeof(GDT) << endl; 
 }

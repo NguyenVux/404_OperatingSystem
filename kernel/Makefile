@@ -1,5 +1,7 @@
 CC=clang++
 LD=clang
+ASM = nasm
+ASMFLAGS =
 CFLAGS =-target x86_64-unknown-windows \
 	-ffreestanding \
 	-fshort-wchar \
@@ -24,12 +26,17 @@ rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(su
 SRC = $(wildcard $(SRCDIR)/*.cpp)          
 OBJS = $(patsubst $(SRCDIR)/%.cpp, $(BUILDDIR)/%.o, $(SRC))
 OBJST = $(patsubst $(BUILDDIR)/%/%, 1, $(OBJS))
-kernel:$(OBJS)
-	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $^
+_kernel1:$(OBJS)
+	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $^ $(BUILDDIR)/gdt_asm.o
+	
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $< 
+_kernel2:
+	$(CC) $(CFLAGS) -c -o $(BUILDDIR)/gdt.o $(SRCDIR)/gdt/gdt.cpp
+	$(ASM)  $(SRCDIR)/gdt/gdt.cpp -f elf64 -o $(BUILDDIR)/gdt_asm.o
+
 clean:
 	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include *.* -File -Recurse | foreach { $$_.Delete()}"
 
-test: 
-	@echo $(OBJS)
+kernel: _kernel2 _kernel1
+	@echo "finish"
