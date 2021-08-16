@@ -1,3 +1,4 @@
+SHELL := pwsh -NoProfile
 CC=clang++
 LD=clang
 ASM = nasm
@@ -11,7 +12,9 @@ LDFLAGS =-target x86_64-unknown-windows \
 	-nostdlib \
 	-Wl,-entry:_start \
 	-Wl,-subsystem:efi_application \
-	-fuse-ld=lld-link
+	-fuse-ld=lld-link \
+	-WL,-T\
+	-WL,-Bsymbolic\
 
 	
 BUILDDIR = build
@@ -23,20 +26,37 @@ SRCDIR = src
 # OBJ_FILES :=  $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(SRC_FILES)) $(patsubst %.cpp,$(BUILDDIR)/%.o,$(notdir $(SUBSRC_FILES)))
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
-SRC = $(wildcard $(SRCDIR)/*.cpp)          
-OBJS = $(patsubst $(SRCDIR)/%.cpp, $(BUILDDIR)/%.o, $(SRC))
-OBJST = $(patsubst $(BUILDDIR)/%/%, 1, $(OBJS))
-_kernel1:$(OBJS)
-	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $^ $(BUILDDIR)/gdt_asm.o
-	
+
+SRC_CPP = $(call rwildcard,$(SRCDIR),*.cpp)
+SRC_ASM = $(call rwildcard,$(SRCDIR),*.asm) $(call rwildcard,$(SRCDIR),*.s)
+OBJS = $(patsubst $(SRCDIR)/%.cpp, $(BUILDDIR)/%.o, $(SRC_CPP))\
+	$(patsubst $(SRCDIR)/%.asm, $(BUILDDIR)/%_asm.o, $(SRC_ASM))\
+	#$(patsubst $(SRCDIR)/%.s, $(BUILDDIR)/%_s.o, $(SRC_ASM))
+_kernel:$(OBJS)
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(CFLAGS) -c -o $@ $< 
-_kernel2:
-	$(CC) $(CFLAGS) -c -o $(BUILDDIR)/gdt.o $(SRCDIR)/gdt/gdt.cpp
-	$(ASM)  $(SRCDIR)/gdt/gdt.cpp -f elf64 -o $(BUILDDIR)/gdt_asm.o
+	@echo !==== COMPILING $^
+	@pwsh -noprofile -c "md -Force $(@D)| Out-Null"
+	$(CC) $(CFLAGS) -c -o $@ $<
+	@echo
+	@echo 
+$(BUILDDIR)/%_asm.o: $(SRCDIR)/%.asm	
+	@echo !==== COMPILING $^
+	$(ASM) $(ASMFLAGS) $^ -f win64  -o $@
+	@echo  
+	@echo  
+$(BUILDDIR)/%_s.o: $(SRCDIR)/%.s	
+	@echo !==== COMPILING $^
+	$(ASM) $(ASMFLAGS) $^ -f win64  -o $@
+	@echo  
+	@echo  
 
+_kernel_asm:
+	@echo $(OBJS)
+
+link:
+	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $(OBJS)
 clean:
-	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include *.* -File -Recurse | foreach { $$_.Delete()}"
-
-kernel: _kernel2 _kernel1
-	@echo "finish"
+	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include * -Recurse | foreach { $$_.Delete()}"
+test:
+	@echo $(OBJS)
+kernel: _kernel link
