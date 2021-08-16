@@ -1,4 +1,4 @@
-#include "page_frame_allocator.h"
+#include "paging/page_frame_allocator.h"
 
 
 uint64_t last_frame_allocated = 0;

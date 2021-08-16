@@ -1,4 +1,5 @@
 #include "kernelUtil.h"
+#include "gdt/gdt.h"
 extern "C" int _fltused = 0;
 void init_kernel(BootInfo* bootInfo) 
 {
@@ -26,6 +27,10 @@ void init_kernel(BootInfo* bootInfo)
 	{
 		gPageTableManager.MapMemory((void *)t, (void *)t);
 	}
+	GDT_descriptor gdtp;
+	gdtp.Size = sizeof(GDT) -1;
+	gdtp.Offset = (uint64_t)&DefaultGDT;
+	LoadGDT(&gdtp);
 	asm("mov %0, %%cr3"
 	    :
 	    : "r"(PML4));

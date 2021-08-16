@@ -4,8 +4,8 @@
 #include "stdint.h"
 #include "Memory.h"
 #include "stdout.h"
-#include "page_frame_allocator.h"
-#include "page_table_manager.h"
+#include "paging/page_frame_allocator.h"
+#include "paging/page_table_manager.h"
 struct BootInfo
 {
 	FrameBuffer *buffer;

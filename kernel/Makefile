@@ -3,11 +3,12 @@ CC=clang++
 LD=clang
 ASM = nasm
 ASMFLAGS =
+INCLUDE_DIR = include
 CFLAGS =-target x86_64-unknown-windows \
 	-ffreestanding \
 	-fshort-wchar \
 	-mno-red-zone \
-	-I../gnu-efi/inc -I../gnu-efi/inc/x86_64 -I../gnu-efi/inc/protocol
+	-I./include
 LDFLAGS =-target x86_64-unknown-windows \
 	-nostdlib \
 	-Wl,-entry:_start \
@@ -37,18 +38,18 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo !==== COMPILING $^
 	@pwsh -noprofile -c "md -Force $(@D)| Out-Null"
 	$(CC) $(CFLAGS) -c -o $@ $<
-	@echo
-	@echo 
+	@echo.
+	@echo.
 $(BUILDDIR)/%_asm.o: $(SRCDIR)/%.asm	
 	@echo !==== COMPILING $^
 	$(ASM) $(ASMFLAGS) $^ -f win64  -o $@
-	@echo  
-	@echo  
+	@echo.
+	@echo.
 $(BUILDDIR)/%_s.o: $(SRCDIR)/%.s	
 	@echo !==== COMPILING $^
 	$(ASM) $(ASMFLAGS) $^ -f win64  -o $@
-	@echo  
-	@echo  
+	@echo.
+	@echo.
 
 _kernel_asm:
 	@echo $(OBJS)
@@ -56,7 +57,10 @@ _kernel_asm:
 link:
 	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $(OBJS)
 clean:
-	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include * -Recurse | foreach { $$_.Delete()}"
-test:
-	@echo $(OBJS)
+	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include * -Recurse | Remove-Item -Verbose -Recurse -Force -Confirm:$$false  "
+buildimg: 
+	cd .. && pwsh -c "wsl ./buildimg.sh"
+run:
+	cd .. && pwsh -f ./run2.ps1
+all: kernel buildimg run
 kernel: _kernel link

@@ -1,4 +1,4 @@
-#include "page_table_manager.h"
+#include "paging/page_table_manager.h"
 #include "stdout.h"
 PageTable *PML4 = NULL;
 PageTableManager gPageTableManager;
@@ -9,7 +9,7 @@ PageTableManager::PageTableManager(PageTable* PML4Address){
 }
 
 void PageTableManager::MapMemory(void* virtualMemory, void* physicalMemory){
-    PageMapIndexer indexer = PageMapIndexer((uint64_t)virtualMemory);
+    PageMapIndexer indexer = PageMapIndexer(virtualMemory);
     PageDirectoryEntry PDE;
     PDE = PML4->entries[indexer.PDP_i];
     PageTable* PDP;
