@@ -34,7 +34,7 @@ void init_kernel(BootInfo* bootInfo)
 	stdout <<"Kernel: " << (uint64_t)&gdtp << endl;
 	stdout.flush();
 	LoadGDT(&gdtp);
-	// asm("mov %0, %%cr3"
-	//     :
-	//     : "r"(PML4));
+	asm("mov %0, %%cr3"
+	    :
+	    : "r"(PML4));
 }

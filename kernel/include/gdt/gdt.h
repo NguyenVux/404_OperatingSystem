@@ -22,7 +22,7 @@ struct GDT {
     GDTEntry Null; //0x00
     GDTEntry KernelCode; //0x08
     GDTEntry KernelData; //0x10
-    // GDTEntry UserNull;
+    GDTEntry UserNull;
     GDTEntry UserCode;
     GDTEntry UserData;
 }__attribute__((packed));

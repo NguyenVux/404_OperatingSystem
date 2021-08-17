@@ -16,4 +16,5 @@ extern "C" void _start(BootInfo bootInfo)
 	stdout <<"Kernel: " << (uint64_t)&gdtp << endl;
 	stdout << "packed size: " << sizeof(GDTEntry) << endl;
 	stdout << "packed size: " << sizeof(GDTDescriptor) << endl;
+	while(1){};
 }

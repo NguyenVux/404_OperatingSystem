@@ -1,9 +1,7 @@
 [bits 64]
 section .text
-GLOBAL LoadGDT
-LoadGDT:   
-    jmp $
-    lgdt [rdi]
+LoadGDT:  
+    lgdt [rcx]
     mov ax, 0x10
     mov ds, ax
     mov es, ax
@@ -14,4 +12,6 @@ LoadGDT:
     mov rax, 0x08
     push rax
     push rdi
-    retf
+    retfq
+    jmp $
+GLOBAL LoadGDT
