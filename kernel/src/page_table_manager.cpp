@@ -15,7 +15,6 @@ void PageTableManager::MapMemory(void* virtualMemory, void* physicalMemory){
     PageTable* PDP;
     if (!PDE.Present){
         PDP = (PageTable*)gPageFrameAllocator.requestPage();
-        stdout << "addr: " << (uint64_t)PDP << endl;
         memset(PDP, 0, 0x1000);
         PDE.Address = (uint64_t)PDP >> 12;
         PDE.Present = true;

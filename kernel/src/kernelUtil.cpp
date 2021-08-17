@@ -27,11 +27,14 @@ void init_kernel(BootInfo* bootInfo)
 	{
 		gPageTableManager.MapMemory((void *)t, (void *)t);
 	}
-	GDT_descriptor gdtp;
-	gdtp.Size = sizeof(GDT) -1;
+	
+	GDTDescriptor gdtp;
+	gdtp.Size = sizeof(DefaultGDT) -1;
 	gdtp.Offset = (uint64_t)&DefaultGDT;
+	stdout <<"Kernel: " << (uint64_t)&gdtp << endl;
+	stdout.flush();
 	LoadGDT(&gdtp);
-	asm("mov %0, %%cr3"
-	    :
-	    : "r"(PML4));
+	// asm("mov %0, %%cr3"
+	//     :
+	//     : "r"(PML4));
 }

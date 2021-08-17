@@ -1,8 +1,8 @@
 [bits 64]
-	nop
 section .text
 GLOBAL LoadGDT
 LoadGDT:   
+    jmp $
     lgdt [rdi]
     mov ax, 0x10
     mov ds, ax
@@ -14,4 +14,4 @@ LoadGDT:
     mov rax, 0x08
     push rax
     push rdi
-    retfq
+    retf
