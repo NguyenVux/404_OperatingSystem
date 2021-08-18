@@ -1,5 +1,5 @@
 SHELL := pwsh -NoProfile
-CC=clang++
+CC=clang
 LD=clang
 ASM = nasm
 ASMFLAGS =

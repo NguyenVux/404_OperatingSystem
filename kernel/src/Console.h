@@ -19,5 +19,6 @@ public:
 	void init(FrameBuffer*,PSF1_FONT*);
 	void print(char,uint32_t);
 	void clear(uint32_t color);
+	void setCursor(uint32_t x,uint32_t y);
 };
 extern Console console;

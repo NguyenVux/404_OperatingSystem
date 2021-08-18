@@ -63,3 +63,8 @@ void Console::clear(uint32_t color)
 	}
 }
 
+void Console::setCursor(uint32_t x,uint32_t y)
+{
+	this->cursor = {x,y};
+}
+
