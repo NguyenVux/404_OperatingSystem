@@ -1,5 +1,5 @@
 #include "kernelUtil.h"
-#include "gdt/gdt.h"
+
 extern "C" int _fltused = 0;
 void init_kernel(BootInfo* bootInfo) 
 {
@@ -31,10 +31,24 @@ void init_kernel(BootInfo* bootInfo)
 	GDTDescriptor gdtp;
 	gdtp.Size = sizeof(DefaultGDT) -1;
 	gdtp.Offset = (uint64_t)&DefaultGDT;
-	stdout <<"Kernel: " << (uint64_t)&gdtp << endl;
-	stdout.flush();
 	LoadGDT(&gdtp);
 	asm("mov %0, %%cr3"
 	    :
 	    : "r"(PML4));
+	init_idt();
+}
+
+#define IDT_TA_InterruptGate 	0b10001110
+#define IDT_TA_CallGate 	0b10001100
+#define IDT_TA_TrapGate 	0b10001111
+void init_idt() 
+{
+	gIdtr.limit = 0x0fff;
+	gIdtr.offset = (uint64_t)gPageFrameAllocator.requestPage();
+	IDT_ENTRY* interrupt_pageFault = (IDT_ENTRY*)(gIdtr.offset+0xE*sizeof(IDT_ENTRY));
+	interrupt_pageFault->Set_offset((uint64_t)PageFault_handler);
+	interrupt_pageFault->type_attr = IDT_TA_InterruptGate;
+	interrupt_pageFault->selector = 0x08;
+
+	asm("lidt %0" : :"m"(gIdtr));
 }

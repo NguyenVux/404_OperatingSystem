@@ -52,3 +52,14 @@ void Console::print(char x,uint32_t color) {
 	}
 }
 
+void Console::clear(uint32_t color) 
+{
+	uint32_t* pixel_pointer =  (uint32_t*)buffer->Base_Adrress;
+	uint32_t* end = (uint32_t*)((uint8_t*)pixel_pointer+buffer->Buffer_Size);
+
+	for(; pixel_pointer <= end; pixel_pointer++)
+	{
+		*pixel_pointer = color;
+	}
+}
+

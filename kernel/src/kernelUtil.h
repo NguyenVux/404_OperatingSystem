@@ -6,6 +6,9 @@
 #include "stdout.h"
 #include "paging/page_frame_allocator.h"
 #include "paging/page_table_manager.h"
+#include "interrupts/IDT.h"
+#include "interrupts/interrupts.h"
+#include "gdt/gdt.h"
 struct BootInfo
 {
 	FrameBuffer *buffer;
@@ -17,5 +20,7 @@ struct BootInfo
 	void *kernel_base;
 };
 extern void init_kernel(BootInfo* bootInfo);
+//extern void init_memory(BootInfo* bootInfo);
+extern void init_idt();
 
 #endif // __KERNELUTIL_H__

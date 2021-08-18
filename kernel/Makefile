@@ -3,12 +3,12 @@ CC=clang++
 LD=clang
 ASM = nasm
 ASMFLAGS =
-INCLUDE_DIR = include
-CFLAGS =-target x86_64-unknown-windows \
+INCLUDE_DIR = src
+CFLAGS :=-target x86_64-unknown-windows \
 	-ffreestanding \
 	-fshort-wchar \
 	-mno-red-zone \
-	-I./include
+	-I$(INCLUDE_DIR)
 LDFLAGS =-target x86_64-unknown-windows \
 	-nostdlib \
 	-Wl,-entry:_start \
@@ -34,6 +34,12 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(BUILDDIR)/%.o, $(SRC_CPP))\
 	$(patsubst $(SRCDIR)/%.asm, $(BUILDDIR)/%_asm.o, $(SRC_ASM))\
 	#$(patsubst $(SRCDIR)/%.s, $(BUILDDIR)/%_s.o, $(SRC_ASM))
 _kernel:$(OBJS)
+$(BUILDDIR)/interrupts/interrupts.o: $(SRCDIR)/interrupts/interrupts.cpp
+	@echo !==== COMPILING $^
+	@pwsh -noprofile -c "md -Force $(@D)| Out-Null"
+	$(CC) $(CFLAGS) -mgeneral-regs-only -c -o $@ $<
+	@echo.
+	@echo.
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo !==== COMPILING $^
 	@pwsh -noprofile -c "md -Force $(@D)| Out-Null"
