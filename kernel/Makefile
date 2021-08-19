@@ -48,6 +48,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo.
 $(BUILDDIR)/%_asm.o: $(SRCDIR)/%.asm	
 	@echo !==== COMPILING $^
+	@pwsh -noprofile -c "md -Force $(@D)| Out-Null"
 	$(ASM) $(ASMFLAGS) $^ -f win64  -o $@
 	@echo.
 	@echo.
@@ -63,7 +64,7 @@ _kernel_asm:
 link:
 	$(CC) $(LDFLAGS) -o $(FINALDIR)/kernel.sys $(OBJS)
 clean:
-	pwsh -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include * -Recurse | Remove-Item -Verbose -Recurse -Force -Confirm:$$false  "
+	pwsh -noprofile -command "Get-ChildItem -Path ./$(BUILDDIR)/ -Include * -Recurse | Remove-Item -Verbose -Recurse -Force -Confirm:$$false  "
 buildimg: 
 	cd .. && pwsh -c "wsl ./buildimg.sh"
 run:

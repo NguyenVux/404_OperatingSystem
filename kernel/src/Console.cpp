@@ -24,7 +24,11 @@ void Console::print(char x,uint32_t color) {
 		cursor.x = 0;
 		return;
 	}
-
+	if(cursor.x+8+spacing > buffer->Pixel_per_ScaneLine)
+	{
+		cursor.x = 0;
+		cursor.y += font->PSF1_HEADERl->charsize;
+	}
 	
 	uint32_t* pixel_pointer =  (uint32_t*)buffer->Base_Adrress;
 	char* fontPtr = (char*)font->glyph_BUFFER + (font->PSF1_HEADERl->charsize*x);
@@ -45,11 +49,7 @@ void Console::print(char x,uint32_t color) {
 
 	}
 	cursor.x+=8+spacing;
-	if(cursor.x > buffer->Pixel_per_ScaneLine)
-	{
-		cursor.x = 0;
-		cursor.y += font->PSF1_HEADERl->charsize;
-	}
+	
 }
 
 void Console::clear(uint32_t color) 

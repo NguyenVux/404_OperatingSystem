@@ -8,6 +8,7 @@
 #include "paging/page_table_manager.h"
 #include "interrupts/IDT.h"
 #include "interrupts/interrupts.h"
+#include "pic/pic.h"
 #include "gdt/gdt.h"
 struct BootInfo
 {
@@ -22,5 +23,5 @@ struct BootInfo
 extern void init_kernel(BootInfo* bootInfo);
 //extern void init_memory(BootInfo* bootInfo);
 extern void init_idt();
-
+extern void remapPIC();
 #endif // __KERNELUTIL_H__
